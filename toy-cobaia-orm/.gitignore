@@ -1,0 +1,13 @@
+# Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Build
+build/
+*/build/
+
+# SQLite bancos
+*.sqlite
+
+# VS Code
+.vscode/
