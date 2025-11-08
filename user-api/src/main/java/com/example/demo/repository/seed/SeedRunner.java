@@ -1,83 +1,76 @@
-package com.example.demo.repository.seed;
+  package com.example.demo.repository.seed;
 
-import java.time.LocalDateTime;
-import java.util.List;
+  import java.time.LocalDateTime;
+  import java.util.List;
+  import java.util.HashSet;
 
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
+  import org.springframework.boot.ApplicationArguments;
+  import org.springframework.boot.ApplicationRunner;
+  import org.springframework.stereotype.Component;
 
-import com.example.demo.repository.IslandRepository;
-import com.example.demo.repository.entity.Island;
-import com.example.demo.repository.entity.Island.Disposition;
-import com.example.demo.repository.entity.Workstation;
+  import com.example.demo.domain.Island;
+  import com.example.demo.domain.Workstation;
+  import com.example.demo.repository.IslandRepository;
+  import com.example.demo.repository.seed.Disposition; 
 
-@Component
-public class SeedRunner implements ApplicationRunner  {
+  @Component
+  public class SeedRunner implements ApplicationRunner {
 
-    private final IslandRepository repo;
+      private final IslandRepository repo;
 
-    SeedRunner(IslandRepository repo) {
-        this.repo = repo;
-    }
+      public SeedRunner(IslandRepository repo) {
+          this.repo = repo;
+      }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
+      @Override
+      public void run(ApplicationArguments args) throws Exception {
 
-        System.out.println("SEMEANDO ----------- \n\n\n");
+          System.out.println("SEMEANDO ----------- \n\n\n");
 
-        inserirIlhaWorkstation();
+          if (repo.count() == 0) {
+              inserirIlhaWorkstation();
+          }
 
-        List<Island> islands = repo.findIslandWithAvailableWorkstations();
+          // cuidado: este método deve existir no repositório
+          // Assumindo que findIslandWithAvailableWorkstations() existe no seu
+          // IslandRepository
+          List<Island> islands = repo.findIslandWithAvailableWorkstations();
 
-        System.out.println("ISLANDS===========================");
-        System.out.println(islands);
+          System.out.println("ISLANDS===========================");
+          System.out.println(islands);
+      }
 
-        /*
-         * Optional<Island> op = repo.findById(1L);
-         * 
-         * 
-         * if (op.isPresent()) {
-         * var island = op.get();
-         * 
-         * // island.getWorkstations();
-         * 
-         * island.removeWorkstations(
-         * ws -> ws.getId().equals("WS1"));
-         * 
-         * repo.save(island);
-         * }
-         */
-    }
+      private void inserirIlhaWorkstation() {
+          Island i1 = new Island();
+          i1.setDescription("Island 1");
+          i1.setDisposition(Disposition.SQUARE);
+          i1.setCreatedAt(LocalDateTime.now());
+          i1.setUpdatedAt(LocalDateTime.now());
 
-    private void inserirIlhaWorkstation() {
-        Island i1 = new Island();
-        i1.setDescription("Island 1");
-        i1.setDisposition(Disposition.SQUARE);
-        i1.setCreatedAt(LocalDateTime.now());
-        i1.setUpdatedAt(LocalDateTime.now());
+          // garantir que a coleção exista
+          if (i1.getWorkstations() == null) {
+              i1.setWorkstations(new HashSet<>());
+          }
 
-        var ws1 = new Workstation();
-        ws1.setId("WS1");
-        ws1.setSpecs("Specs ws1");
-        ws1.setCreatedAt(LocalDateTime.now());
-        ws1.setUpdatedAt(LocalDateTime.now());
+          var ws1 = new Workstation();
+          // CORREÇÃO: Usar setDescription, pois o campo se chama 'description'
+          ws1.setDescription("Specs ws1");
+          ws1.setCreatedAt(LocalDateTime.now());
+          ws1.setUpdatedAt(LocalDateTime.now());
 
-        var ws2 = new Workstation();
-        ws2.setId("WS2");
-        ws2.setSpecs("Specs ws2");
-        ws2.setCreatedAt(LocalDateTime.now());
-        ws2.setUpdatedAt(LocalDateTime.now());
+          var ws2 = new Workstation();
+          // CORREÇÃO: Usar setDescription, pois o campo se chama 'description'
+          ws2.setDescription("Specs ws2");
+          ws2.setCreatedAt(LocalDateTime.now());
+          ws2.setUpdatedAt(LocalDateTime.now());
 
-        // estabelecer o relacionamento nas duas pontas
-        ws1.setIsland(i1);
-        i1.getWorkstations().add(ws1);
+          // estabelecer o relacionamento nas duas pontas corretamente
+          ws1.setIsland(i1);
+          i1.getWorkstations().add(ws1);
 
-        ws2.setIsland(i1);
-        i1.getWorkstations().add(ws2);
+          ws2.setIsland(i1);
+          i1.getWorkstations().add(ws2);
 
-        repo.save(i1);
-
-    }
-    
-}
+          repo.save(i1);
+      }
+  }

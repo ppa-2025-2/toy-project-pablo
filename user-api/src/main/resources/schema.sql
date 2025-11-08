@@ -41,8 +41,9 @@ CREATE TABLE IF NOT EXISTS islands (
 DROP TABLE IF EXISTS workstations;
 
 CREATE TABLE IF NOT EXISTS workstations (
-    id          VARCHAR(10) NOT NULL PRIMARY KEY,
-    island_id   INTEGER     NOT NULL REFERENCES island(id),
+    id          INTEGER  PRIMARY KEY AUTOINCREMENT,
+    rn          TEXT,
+    island_id   INTEGER     NOT NULL REFERENCES islands(id),
     user_id     INTEGER         NULL REFERENCES users(id),
     specs       TEXT        NOT NULL,
     created_at  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,

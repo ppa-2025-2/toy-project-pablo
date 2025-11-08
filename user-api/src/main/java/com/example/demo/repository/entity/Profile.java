@@ -1,18 +1,10 @@
 package com.example.demo.repository.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "profiles")
+@Table(name = "hte_user_profiles") // Nome da tabela ajustado para seguir o padrão hte_
 public class Profile {
 
     public enum AccountType {
@@ -20,13 +12,16 @@ public class Profile {
         PROFESSIONAL,
         ENTERPRISE
     }
-    
+
+    // O ID é mapeado a partir da entidade User
     @Id
-    private Integer id;
+    @Column(name = "user_id") // Nome da coluna no DB
+    private Long id;
 
     @MapsId
     @OneToOne
-    @JoinColumn(name = "id")
+    //Usa o nome correto da chave estrangeira.
+    @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
@@ -36,11 +31,16 @@ public class Profile {
     @Enumerated(EnumType.STRING)
     private AccountType type;
 
-    public Integer getId() {
+    // --- Construtor Padrão (Obrigatório) ---
+    public Profile() {
+        this.type = AccountType.FREE; // Define um default
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -75,6 +75,4 @@ public class Profile {
     public void setUser(User user) {
         this.user = user;
     }
-
-    
 }

@@ -37,3 +37,258 @@ Content-Type: application/json
     ],
     "company": "potato inc"
 }
+
+### Post an invalid user
+
+POST http://localhost:8080/api/v1/users/1/allocate HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "islandId": 1
+}
+
+### Post an invalid user
+
+POST http://localhost:8080/api/v1/users/2/allocate HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "islandId": 1
+}
+
+
+### Create a new User
+
+POST /api/v1/users HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+    "email": "batata@potato.com",
+    "password": "1234RT56",
+    "handle": "papas",
+    "name": "Kartofel",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "company": "potato inc"
+}
+
+### Get all users
+
+
+
+    GET /api/v1/users HTTP/1.1
+    Host: localhost:8080
+    Accept: application/json
+
+### Create a New User (Com novos dados)
+
+POST /api/v1/users HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+    "email": "teste@novo.com",
+    "password": "1234RT56",
+    "handle": "novo_user",
+    "name": "User Novo",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "company": "Test Inc"
+}
+
+### Create a New User
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "email": "testes@novo.com",
+    "password": "1234RD56",
+    "handle": "novo_user",
+    "name": "User Novo",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "company": "Test Inc"
+}
+
+### Create a New User
+
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "email": "teste_final_v2@novo.com",
+    "password": "1234RT56",
+    "handle": "final_user_v2",
+    "name": "User Final V2",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "company": "Test Inc"
+}
+
+
+### Get all users
+GET http://localhost:8080/api/v1/users
+Host: localhost:8080
+Accept: application/json
+
+### Post to allocate workstation
+POST http://localhost:8080/api/v1/users/1/allocate
+Content-Type: application/json
+
+{
+  "islandId": 1
+}
+
+### Get all users
+GET http://localhost:8080/api/v1/users
+Host: localhost:8080
+Accept: application/json
+
+### Create a New User (POST)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "email": "testev3@novo.com",
+    "password": "1234RT56",
+    "handle": "final_user_v3",
+    "name": "User Final V3",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "company": "Test Inc"
+}
+
+### Post to allocate workstation
+POST http://localhost:8080/api/v1/users/1/allocate
+Content-Type: application/json
+
+{
+  "islandId": 1
+}
+
+### Get all users
+GET http://localhost:8080/api/v1/users
+Host: localhost:8080
+Accept: application/json
+
+### Post to allocate workstation
+POST http://localhost:8080/api/v1/users/2/allocate
+Content-Type: application/json
+
+{
+  "islandId": 1
+}
+
+
+### Get all users (Expected Clean JSON)
+GET http://localhost:8080/api/v1/users
+Host: localhost:8080
+Accept: application/json
+
+### Create a New User (POST) - Novo ID será 1
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "email": "teste_final_v4@novo.com",
+    "password": "1234RT56",
+    "handle": "final_user_v4",
+    "name": "User Final V4",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "company": "Test Inc"
+}
+
+### Post to allocate workstation
+POST http://localhost:8080/api/v1/users/3/allocate
+Content-Type: application/json
+
+{
+  "islandId": 1
+}
+
+### Get all users
+GET http://localhost:8080/api/v1/users
+Host: localhost:8080
+Accept: application/json
+
+
+### Create a New User (POST)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "email": "teste_clean_json@final.com",
+    "password": "1234RT56",
+    "handle": "clean_user",
+    "name": "User Clean JSON",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "company": "Test Inc"
+}
+
+### Post to allocate workstation
+POST http://localhost:8080/api/v1/users/4/allocate
+Content-Type: application/json
+
+{
+  "islandId": 1
+}
+
+### 1. Criar Novo Usuário (POST)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "email": "teste_alocacao_final@final.com",
+    "password": "1234RT56",
+    "handle": "final_user",
+    "name": "User Final Alocacao",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "company": "Test Inc"
+}
+
+### 1. Criar Novo Usuário (POST)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "email": "user_final@teste.com",
+    "password": "SenhaSegura123",
+    "handle": "final_user_handle",
+    "name": "Usuario Final Alocado",
+    "roles": [
+        "ROLE_USER"
+    ],
+    "company": "Final Solutions"
+}
+
+### 1. Listar Todos os Usuários
+GET http://localhost:8080/api/v1/users
+
+
+
+
+### Alocar Workstation
+POST http://localhost:8080/api/v1/users/1/allocate
+Content-Type: application/json
+
+{
+  "islandId": 1
+}
+
+
+### 1. Listar Usuário ID 1
+GET http://localhost:8080/api/v1/users/1

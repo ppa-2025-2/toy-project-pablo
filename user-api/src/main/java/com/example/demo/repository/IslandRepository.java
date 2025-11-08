@@ -1,12 +1,13 @@
 package com.example.demo.repository;
 
 import java.util.List;
-
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
+import com.example.demo.domain.Island;
+import com.example.demo.repository.seed.Disposition;
 
-import com.example.demo.repository.entity.Island;
-import com.example.demo.repository.entity.Island.Disposition;
+
 
 public interface IslandRepository 
     extends ListCrudRepository<Island, Long> {
@@ -23,5 +24,11 @@ public interface IslandRepository
             WHERE w.user IS NULL
             """)
     List<Island> findIslandWithAvailableWorkstations();
+
+    Optional<Island> findById(Integer islandId);
+
+   // Island save(com.example.demo.domain.Island island);
+
+    //void save(Object island);
 
 }

@@ -1,78 +1,65 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.demo.controller.dto.NewUserDTO;
-import com.example.demo.domain.UserService;
-import com.example.demo.application.IslandService;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.entity.User;
+import com.example.demo.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private final UserService userService; // Renomeado para clareza
-    private final UserRepository userRepository;
-    private final IslandService islandService; // Tipo e finalidade corrigidos
+    private final UserService userService;
 
-    // Construtor com Injeção de Dependência (DI)
-    public UserController(
-            UserService userService,
-            UserRepository userRepository,
-            IslandService islandService // Adicionado para injeção correta
-    ) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
-        this.islandService = islandService; // Atribuição corrigida
     }
 
-    // 1. ENDPOINT POST para Criar Novo Usuário
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public void newUser(@RequestBody NewUserDTO newUser) {
-        // Delega a lógica de negócio para o UserService (antigo userBusiness)
-        userService.cadastrarUsuario(newUser);
+    // --- 1. Criação de Usuário (POST /api/v1/users) ---
+    /**
+     * Cria um novo usuário e seu perfil.
+     */
+    @PostMapping
+    public ResponseEntity<Void> createUser(@RequestBody NewUserDTO newUserDTO) {
+        userService.cadastrarUsuario(newUserDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // 2. ENDPOINT GET para Listar Usuários
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> getUsers() {
-        // Retorna o status 200 OK e a lista de todos os usuários
-        return ResponseEntity.ok(userRepository.findAll());
+    // --- 2. Listar Todos os Usuários (GET /api/v1/users) ---
+    /**
+     * Lista todos os usuários.
+     */
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.listarTodos();
+        return ResponseEntity.ok(users);
     }
 
-    // 3. ENDPOINT POST para Alocar Workstation
-    @PostMapping(path = "/{id}/allocate", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> allocateWorkstation(@PathVariable("id") Integer id) {
+    // --- 3. Buscar Usuário por ID (GET /api/v1/users/{id}) ---
+    /**
+     * Busca um usuário pelo ID. Resolve o HTTP 404 que estávamos enfrentando.
+     */
+    @GetMapping("/{id}") // Mapeamento correto para capturar o ID na URL
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        Optional<User> userOptional = userService.findById(id);
 
-        // CORREÇÃO: Usando o IslandService, que provavelmente tem o método
-        // para o contexto da ilha, e não o UserService (que é o que estava
-        // sendo feito na sua linha original, mas com um cast desnecessário e errado)
-        // Se o objetivo é usar o UserService, troque a linha abaixo.
-
-        // Chamada Corrigida (Assumindo que IslandService tem
-        // alocarWorkstationDisponivel)
-        // Se o método 'alocarWorkstationDisponivel' está em IslandService:
-        islandService.alocarWorkstationDisponivel(id);
-
-        /*
-         * * Se o método 'alocarWorkstationDisponivel' está em UserService,
-         * use esta linha e remova 'IslandService' das dependências:
-         * userService.alocarWorkstationDisponivel(id);
-         */
-
-        return ResponseEntity.ok("allocated");
+        if (userOptional.isPresent()) {
+            // Retorna 200 OK com os dados do usuário
+            return ResponseEntity.ok(userOptional.get());
+        } else {
+            // Retorna 404 Not Found se o usuário não for encontrado
+            return ResponseEntity.notFound().build();
+        }
     }
+
+    // O método de alocação de Workstation deve estar no IslandController (como
+    // definimos inicialmente).
 }
+
+
+

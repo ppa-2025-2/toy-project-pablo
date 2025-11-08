@@ -1,70 +1,60 @@
 package com.example.demo.repository.entity;
 
+import com.example.demo.domain.Workstation;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-// Banco de Dados -> Entidade
-// POO: Programação Orientada a Objetos (POO)
-// Entidade: objeto que tem IDENTIDADE (muda com o tempo
-// O/R M: Object/Relational Mapping
-// Mapeamento Objeto/Relacional
-// Problema da Diferença de Representação
-// Impedance Mismatch (diferença de impedância)
-// Entity: DDD (Domain-Driven Design)
-
-// <<entidade>> -> stereotype -> estereótipo
-// Entity -> Metadata
-@Entity // anotação/annotation
-@Table(name = "users")
+@Entity
+@Table(name = "hte_users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @JsonIgnore
-    @Column(nullable = false, length = 255)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    // baixa coesão
-    @JsonProperty(value = "username") // payload
-    @Column(nullable = false, unique = true, length = 255) // banco
+    @Column(name = "handle", unique = true)
     private String handle;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference // Lado serializável
+    private Workstation workstation;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Profile profile;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "users_roles", 
-        joinColumns = @JoinColumn(name = "user_id"), 
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "hte_user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<String> roles = new HashSet<>();
 
-    public Integer getId() {
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    // --- Construtor Padrão ---
+    public User() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.profile = new Profile();
+        this.profile.setUser(this);
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -92,6 +82,14 @@ public class User {
         this.handle = handle;
     }
 
+    public Workstation getWorkstation() {
+        return workstation;
+    }
+
+    public void setWorkstation(Workstation workstation) {
+        this.workstation = workstation;
+    }
+
     public Profile getProfile() {
         return profile;
     }
@@ -100,12 +98,27 @@ public class User {
         this.profile = profile;
     }
 
-    public Set<Role> getRoles() {
+    public Set<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(Set<String> roles) {
         this.roles = roles;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
