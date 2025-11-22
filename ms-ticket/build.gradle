@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.8'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // WEB (necessário para subir servidor Tomcat embutido)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Bean validation (@Valid, @NotNull, etc.)
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // JPA / Hibernate
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Segurança (se estiver usando Security)
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // SQLite
+    implementation 'org.xerial:sqlite-jdbc:3.46.0.0'
+    implementation 'org.hibernate.orm:hibernate-community-dialects'
+
+    // H2 (opcional, para testes em memória)
+    // runtimeOnly 'com.h2database:h2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+bootRun {
+    mainClass = 'com.example.msticket.MsTicketApplication'
+}
